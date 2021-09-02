@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="author" content="Sofia Martins" />
+    <title>Desafio Calculadora</title>
+    <style>
+      .gridContainer {
+        width: 200px;
+        background-color: #e5e1e0ea;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+        margin: 20px auto;
+        padding: 20px;
+        border-radius: 10px;
+
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        grid-gap: 5px;
+        grid-template-rows: auto repeat(5, 40px);
+      }
+      button {
+        border: transparent;
+        border-radius: 10px;
+      }
+      .sinal,
+      .numero {
+        background: linear-gradient(#fbfbfb, #e0e0e0);
+        padding: 0.25em;
+      }
+      .sinal:hover {
+        background: tomato;
+      }
+      .numero:hover {
+        background: #91b9a4;
+      }
+      .mais {
+        background: #d497b2;
+        grid-column: 4/5;
+        grid-row: 5/7;
+        box-shadow: inset 3px 2px 0 rgba(197, 197, 197, 0.5);
+      }
+      .mais:hover {
+        background: #8c6275;
+        box-shadow: inset 3px 2px 0 rgba(197, 197, 197, 0.5);
+        color: white;
+      }
+      .zero {
+        background: #ffdf6f;
+        grid-column: 1/3;
+        box-shadow: inset 3px 2px 0 rgba(197, 197, 197, 0.5);
+      }
+      .zero:hover {
+        background: #f7cd36;
+        color: white;
+        box-shadow: inset 3px 2px 0 rgba(197, 197, 197, 0.5);
+      }
+      .limpar {
+        color: #5a1003;
+      }
+      .limpar:hover {
+        background: #b1260d;
+        color: white;
+      }
+      .display {
+        padding: 10px;
+        background: #7dabd0;
+        font-size: 1.4em;
+        text-align: right;
+        box-shadow: inset 3px 2px 0 rgba(255, 255, 255, 0.5);
+        margin-bottom: 15px;
+        grid-column: 1/-1;
+        height: 60px;
+      }
+      #display_calculo {
+        font-size: 0.8em;
+        color: rgba(255, 255, 255, 0.5);
+        padding-bottom: 0.5em;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="gridContainer">
+      <div class="display">
+        <div id="display_calculo">5x2</div>
+        <div id="display_resultado"></div>
+      </div>
+      <button class="limpar" onclick="limparTudo()">AC</button>
+      <button class="sinal" onclick="calcularPorcento()">%</button>
+      <button class="sinal" onclick="iniciarCalculo('*')">x</button>
+      <button class="sinal" onclick="iniciarCalculo('/')">:</button>
+      <button class="numero" onclick="inserirDigito('7')">7</button>
+      <button class="numero" onclick="inserirDigito('8')">8</button>
+      <button class="numero" onclick="inserirDigito('9')">9</button>
+      <button class="sinal" onclick="finalizarCalculo()">=</button>
+      <button class="numero" onclick="inserirDigito('4')">4</button>
+      <button class="numero" onclick="inserirDigito('5')">5</button>
+      <button class="numero" onclick="inserirDigito('6')">6</button>
+      <button class="sinal" onclick="iniciarCalculo('-')">-</button>
+      <button class="numero" onclick="inserirDigito('1')">1</button>
+      <button class="numero" onclick="inserirDigito('2')">2</button>
+      <button class="numero" onclick="inserirDigito('3')">3</button>
+      <button class="mais" onclick="iniciarCalculo('+')">+</button>
+      <button class="zero" onclick="inserirDigito('0')">0</button>
+      <button class="numero" onclick="inserirPonto()">,</button>
+    </div>
+  </body>
+  <script>
+    // 1 definir variavel para o primeiro numero
+    var n1 = "0";
+    //4 criar as variaveis para o calculo
+    var operacao = null;
+    var n2 = "";
+    mostrarDisplay(0);
+    // 2 função que guarda os digitos todos do primeiro nr
+    function inserirDigito(digito) {
+      if (clicadoIgual) {
+        clicadoIgual = false;
+        limparTudo();
+        n1 = digito;
+        mostrarDisplay(n1);
+        return;
+      }
+      //5 se var operaçao tiver um valor, o numero é atribuido a n2
+      if (operacao !== null) {
+        n2 += digito;
+        mostrarDisplay(n2);
+      } else {
+        if (n1 === "0") {
+          n1 = digito;
+        } else {
+          n1 += digito;
+        }
+        mostrarDisplay(n1);
+      }
+    }
+
+    //6 função que faz o calculo
+    function calcular() {
+      var nCalculado = 0;
+      //para que n1 e n2 sejam convertidos a nr
+      var _n1 = parseFloat(n1);
+      var _n2 = parseFloat(n2);
+
+      switch (operacao) {
+        case "+":
+          nCalculado = _n1 + _n2;
+          break;
+        case "-":
+          nCalculado = _n1 - _n2;
+          break;
+        case "/":
+          nCalculado = _n1 / _n2;
+          break;
+        case "*":
+          nCalculado = _n1 * _n2;
+          break;
+      }
+      return nCalculado;
+    }
+    //para por o botao = a funcionar
+
+    var clicadoIgual = false;
+
+    function finalizarCalculo(nCalculado) {
+      clicadoIgual = true;
+      var resultado = calcular();
+      n1 = resultado;
+      mostrarDisplay(n1);
+    }
+
+    //4 armazena o sinal para o calculo
+    function iniciarCalculo(simbolo) {
+      //significa que o usuario ja clicou em =
+      //invalida o operacao == null || n2 === ""
+      //limpa o n2 e permite nova operação apos o =
+      if (clicadoIgual) {
+        clicadoIgual = false;
+        n2 = "";
+      }
+
+      //7 se operacao for = a nul ou n2 estiver vazia
+      if (operacao === null || n2 === "") {
+        //deixa mudar o simbolo sem bug
+        operacao = simbolo;
+      } else {
+        // ja tem n1, operacao e n2
+        var resultado = calcular();
+        n1 = resultado;
+        operacao = simbolo;
+        n2 = "";
+        mostrarDisplay(n1);
+      }
+    }
+
+    //para por o ponto no digito
+    function inserirPonto() {
+      if (operacao && n2 === "") {
+        n2 += "0.";
+      } else if (operacao && n2) {
+        n2 += ".";
+      } else {
+        n1 += ".";
+      }
+    }
+
+    //para ativar a %
+    //identificar se é em n1 ou n2 e fazer a conta da percentagem
+    // receber o valor de x em x% -calcular e mostrar o valor
+
+    function calcularPorcento() {
+      //se não existir n2 ele mostra n1
+      if (!n2) {
+        limpar();
+        mostrarNoDisplay(n1);
+      } else {
+        if (operacao === "+" || operacao === "-") {
+          var porcento = (n1 * n2) / 100;
+        } else {
+          var porcento = n2 / 100;
+        }
+        n2 = porcento;
+        mostrarDisplay(n2);
+      }
+    }
+
+    function limparTudo() {
+      n1 = 0;
+      operacao = null;
+      n2 = "";
+      mostrarDisplay(n1);
+    }
+    //3 mostrar no ecra
+    function mostrarDisplay(valor) {
+      var display = document.querySelector("#display_resultado");
+      display.innerHTML = valor;
+    }
+  </script>
+</html>
